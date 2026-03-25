@@ -5,7 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 
 import com.bolsadeideas.springboot.webflux.models.dao.ProductoDao;
 import com.bolsadeideas.springboot.webflux.models.entity.Producto;
@@ -19,8 +19,10 @@ import reactor.core.publisher.Flux;
 
 @SpringBootApplication
 public class SpringBootWebfluxApplication  {
+
 	@Autowired
-	private ProductoDao dao;
+	private ReactiveMongoTemplate mongoTemplate;
+	
 	private static final Logger log = LoggerFactory.getLogger(SpringBootWebfluxApplication.class);
 
 	public static void main(String[] args) {
@@ -31,6 +33,7 @@ public class SpringBootWebfluxApplication  {
 	@Bean
 	CommandLineRunner initData(ProductoDao dao) {
 	    return args -> {  // <-- RETORNO de CommandLineRunner
+	    	mongoTemplate.dropCollection("productos").subscribe();
 	        Flux.just(
 	            new Producto("TV Panasonic Pantalla LCD", 456.89),
 	            new Producto("Sony Camara HD Digital", 177.89),
